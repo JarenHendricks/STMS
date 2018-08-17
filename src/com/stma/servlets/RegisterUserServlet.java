@@ -5,16 +5,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.text.MessageFormat;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.stma.util.User;
 import com.stma.dao.ApplicationDao;
 
-@WebServlet("/registerUser")
+@WebServlet("/register")
 public class RegisterUserServlet extends HttpServlet {
 
 	@Override
@@ -44,38 +46,35 @@ public class RegisterUserServlet extends HttpServlet {
 			infoMessage="Sorry, an error occurred!";
 		}
 		else{
-			infoMessage="User registered successfully!";
+			infoMessage="User registered successfully! Login to confirm your registration.";
+			//set up the HTTP session
+			HttpSession session = req.getSession();
+			
+			//set the username as an attribute
+			session.setAttribute("username", username);
+			
+			//forward to dashboard jsp
+			req.getRequestDispatcher("/html/dashboard.jsp").forward(req, resp);
+					
 		}
-
-		// write the message back to the page in client browser\
-		String page = getHTMLString(req.getServletContext().getRealPath("/html/register.html"), infoMessage);
-		resp.getWriter().write(page);
-				
+		System.out.println(infoMessage);
+		
+		RequestDispatcher dispatcher = req.getRequestDispatcher("/html/register.jsp");
+		dispatcher.include(req, resp);
 				
 	}
 	
 	public String getHTMLString(String filePath, String message) throws IOException{
-		//BufferedReader reader = new BufferedReader(new FileReader(filePath));
-		//String line="";
-		//StringBuffer buffer = new StringBuffer();
-		//while((line=reader.readLine())!=null){
-			//buffer.append(line);
-		//}
 		
-		//reader.close();
-		//String page = buffer.toString();
-		
-		//page = MessageFormat.format(page, message);
-		
-		//return page;
 		return "";
 		
 	}
 		
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		//String page = getHTMLString(req.getServletContext().getRealPath("/html/register.html"), "");
-		//resp.getWriter().write(page);
+		RequestDispatcher dispatcher = req.getRequestDispatcher("/html/register.jsp");
+		dispatcher.include(req, resp);
+	
 	}
 
 	

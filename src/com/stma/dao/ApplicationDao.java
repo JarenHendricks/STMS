@@ -15,19 +15,22 @@ import com.stma.util.User;
 
 public class ApplicationDao {
 
-	public List<Event> searchProducts(String date, Connection connection) {
+	// TODO find events
+	public List<Event> searchEvents(Connection connection) {
 		Event event = null;
 		List<Event> events = new ArrayList<>();
 		try {
 
-			String sql = "SELECT * FROM Events WHERE date =" + date ;
+			
+			String sql = "SELECT EventDescription, EventName, StartDate, EndStart, StartTime, EndTime FROM Events"; ;
 
 			Statement statement = connection.createStatement();
 
 			ResultSet set = statement.executeQuery(sql);
 
 			while (set.next()) {
-//				event = new Event();
+				event = new Event(set.getString("EventDescription"),set.getString("EventName"),set.getString("StartDate"),set.getString("EndDate"),set.getString("EndTime"),set.getString("EndTime"));
+				events.add(event);
 			}
 
 		} catch (SQLException exception) {
@@ -36,6 +39,37 @@ public class ApplicationDao {
 		return events;
 	}
 
+	public int addEvent(Event event) {
+		int rowsAffected = 0;
+		if(event instanceof Event) {
+			
+
+			try {
+				// get the connection for the database
+				Connection connection = DBConnection.getConnectionToDatabase();
+
+				// write the insert query
+				String insertQuery = "INSERT INTO `events` (`eventID`, `userID`, `EventDescription`, `EventName`, `StartDate`, `EndDate`, `StateTime`, `EndTime`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?);";
+
+				// set parameters with PreparedStatement
+				java.sql.PreparedStatement statement = connection.prepareStatement(insertQuery);
+				statement.setInt(1, 1);
+				statement.setString(2, event.getEventDescription());
+				statement.setString(3, event.getEventName());
+				statement.setString(4, event.getStartDate());
+				statement.setString(5, event.getEndDate());
+				statement.setString(6, event.getStartTime());
+				statement.setString(7, event.getEndTime());
+
+				// execute the statement
+				rowsAffected = statement.executeUpdate();
+
+			} catch (SQLException exception) {
+				exception.printStackTrace();
+			}
+		}
+		return 0;
+	}
 	public int registerUser(User user) {
 		int rowsAffected = 0;
 
@@ -44,15 +78,16 @@ public class ApplicationDao {
 			Connection connection = DBConnection.getConnectionToDatabase();
 
 			// write the insert query
-			String insertQuery = "insert into users values(?,?,?,?,?,?)";
+			String insertQuery = "INSERT INTO `users` (`userID`, `username`, `firstname`, `lastname`, `emailaddress`, `password`) VALUES (NULL, ?, ?, ?, ?, ?);";
 
 			// set parameters with PreparedStatement
 			java.sql.PreparedStatement statement = connection.prepareStatement(insertQuery);
-			statement.setString(1, user.getFirstName());
-			statement.setString(2, user.getLastName());
-			statement.setInt(3, 1);
+			statement.setString(1, user.getUserName());
+			statement.setString(2, user.getFirstName());
+			statement.setString(3, user.getLastName());
 			statement.setString(4, user.getEmailAddress());
 			statement.setString(5, user.getPassWord());
+			
 
 			// execute the statement
 			rowsAffected = statement.executeUpdate();
@@ -104,10 +139,10 @@ public class ApplicationDao {
 
 			// execute query, get resultset and return User info
 			ResultSet set = statement.executeQuery();
-			if(set!=null)
-				while (set.next()) {
-					user = new User(set.getString("username"),set.getString("firstname"),set.getString("name"),set.getString("emailaddress"));
-				}
+			if(set!=null) 
+				if(set.next())
+					user = new User(set.getString("username"),set.getString("firstname"),set.getString("surname"),set.getString("emailaddress"));
+			
 
 		}
 

@@ -1,4 +1,5 @@
 <!doctype html>
+
 <html lang="en">
 
 <head>
@@ -40,12 +41,12 @@
                         
                         <ul class="nav navbar-nav navbar-right" data-color="blue">
                             <li>
-                                <a href="/SMTA/register">
+                                <a href="register">
                                     <p>Register Account <i class="pe-7s-add-user"></i></p>
                                 </a>
                             </li>
                             <li>
-                                <a href="/SMTA/logIn">
+                                <a href="login">
                                     <p>Log in <i class="pe-7s-user-female"></i></p>
                                 </a>
                             </li>
