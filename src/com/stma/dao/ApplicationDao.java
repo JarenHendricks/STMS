@@ -16,13 +16,13 @@ import com.stma.util.User;
 public class ApplicationDao {
 
 	// TODO find events
-	public List<Event> searchEvents(Connection connection) {
+	public List<Event> getEvents(Connection connection) {
 		Event event = null;
 		List<Event> events = new ArrayList<>();
 		try {
 
 			
-			String sql = "SELECT EventDescription, EventName, StartDate, EndStart, StartTime, EndTime FROM Events"; ;
+			String sql = "SELECT EventDescription, EventName, StartDate, EndDate, StartTime, EndTime FROM "+DBConnection.table_events ;
 
 			Statement statement = connection.createStatement();
 

@@ -28,7 +28,7 @@ public class AuthenticationFilter implements Filter{
 		
 		
 		HttpServletRequest request = (HttpServletRequest)arg0;
-		
+		System.out.println(request.getRequestURI());
 		/*System.out.println(request.getRequestURI()+" login");
 		if(!request.getRequestURI().startsWith("/STMA/login")){
 			HttpSession session = request.getSession();

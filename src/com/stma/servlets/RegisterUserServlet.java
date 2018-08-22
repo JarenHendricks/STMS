@@ -54,8 +54,7 @@ public class RegisterUserServlet extends HttpServlet {
 			session.setAttribute("username", username);
 			
 			//forward to dashboard jsp
-			req.getRequestDispatcher("/html/dashboard.jsp").forward(req, resp);
-					
+			resp.sendRedirect("/STMA/dashboard");					
 		}
 		System.out.println(infoMessage);
 		

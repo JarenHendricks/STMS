@@ -24,8 +24,8 @@
     <link href="./css/custom.css" rel="stylesheet" />
 
 
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0./css/font-awesome.min.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com./css?family=Roboto:400,700,300' rel='stylesheet' type='text./css'>
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="./css/pe-icon-7-stroke.css" rel="stylesheet" />
 
 </head>
@@ -140,28 +140,14 @@
 
 </body>
 
-<script src="./js/jquery.3.2.1.min.js" type="text/javascript">
-</script>
-<script src="./js/bootstrap.min.js" type="text/javascript">
-</script>
-
-<script src="./js/chartist.min.js">
-</script>
-
-<script src="./js/bootstrap-notify.js">
-</script>
-
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api./js?key=YOUR_KEY_HERE">
-</script>
-
-<script src="./js/light-bootstrap-dashboard.js?v=1.4.0">
-</script>
-<script src="https://unpkg.com/ionicons@4.3.0/dist/ionicons.js">
-</script>
+<script src="./js/jquery.3.2.1.min.js" type="text/javascript"/>
+<script src="./js/bootstrap.min.js" type="text/javascript"/>
+<script src="./js/bootstrap-notify.js"/>
+<script src="./js/light-bootstrap-dashboard.js?v=1.4.0"/>
+<script src="https://unpkg.com/ionicons@4.3.0/dist/ionicons.js"/>
 
 
-<script src="./js/custom.js">
-</script>
+<script src="./js/custom.js"/>
 
 <script type="text/javascript">
     $(document).ready(function() {

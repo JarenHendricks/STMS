@@ -77,7 +77,7 @@ public class DBConnection {
 						"  `EventName` varchar(50) NOT NULL," + 
 						"  `StartDate` Date NOT NULL," + 
 						"  `EndDate` Date NOT NULL," +  
-						"  `StateTime` Time NOT NULL," + 
+						"  `StartTime` Time NOT NULL," + 
 						"  `EndTime` Time NOT NULL," +
 						"  PRIMARY KEY (`eventID`)," +
 						"  FOREIGN KEY (`userID`) REFERENCES `"+table_users+"`(`userID`)" +

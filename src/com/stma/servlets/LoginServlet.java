@@ -17,9 +17,6 @@ public class LoginServlet extends HttpServlet{
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		//dispatch the request to login.jsp resource
-		
-		
 		RequestDispatcher dispatcher = req.getRequestDispatcher("/html/login.jsp");
 		dispatcher.include(req, resp);
 	}
@@ -35,17 +32,12 @@ public class LoginServlet extends HttpServlet{
 		//call DAO for validation logic
 		ApplicationDao dao= new ApplicationDao();
 		boolean isValidUser = dao.validateUser(username, password);
-		
-		//check if user is invalid and set up an error message
 		if(isValidUser){
-			//set up the HTTP session
 			HttpSession session = req.getSession();
 			
-			//set the username as an attribute
 			session.setAttribute("username", username);
 			
-			//forward to dashboard jsp
-			req.getRequestDispatcher("/html/dashboard.jsp").forward(req, resp);
+			resp.sendRedirect("/STMA/dashboard");
 		}
 		else{
 			String errorMessage="Username and/or Password incorrent, please try again!";
