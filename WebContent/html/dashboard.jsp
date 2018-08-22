@@ -10,33 +10,145 @@
 	
 	    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
 	    <meta name="viewport" content="width=device-width" />
-	
-	    <link href="./css/bootstrap.min.css" rel="stylesheet" />
+		<link href="./css/bootstrap.min.css" rel="stylesheet" />
 	
 	    <link href="./css/animate.min.css" rel="stylesheet" />
 	
-	    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"/>
-	    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'/>
-	    <link href="./css/pe-icon-7-stroke.css" rel="stylesheet"/>
+	    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+	    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+	    <link href="./css/pe-icon-7-stroke.css" rel="stylesheet" />
 	
 	    <script src="./js/jquery.3.2.1.min.js" type="text/javascript"></script>
-	    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
 	    <script src="./js/bootstrap.min.js" type="text/javascript"></script>
+	
 	    <script src="./js/bootstrap-notify.js"></script>
 	    <script src="./js/bootstrap.js"></script>
 	
 	
 	    <script src="./js/light-bootstrap-dashboard.js?v=1.4.0"></script>
 	    <script src="https://unpkg.com/ionicons@4.3.0/dist/ionicons.js"></script>
-		
-
 	
 	    <link href="./css/custom.css" rel="stylesheet" />
 	    <script src="./js/custom.js"></script>
 	
+	    <link href='./css/fullcalendar.css' rel='stylesheet' />
 	    <link href="./css/light-bootstrap-dashboard.css?v=1.4.0" rel="stylesheet" />
+		
+	    <script src='./js/jquery/jquery-1.10.2.js'></script>
+		<script src='./js/jquery/jquery-ui.custom.min.js'></script>
+		<script src='./js/fullcalendar.js'></script>
+		<script>
+			$(document).ready(function() {
+			    var date = new Date();
+				var d = date.getDate();
+				var m = date.getMonth();
+				var y = date.getFullYear();
+					
+					  
+				/* initialize the external events
+				-----------------------------------------------------------------*/
+			
+				$('#external-events div.external-event').each(function() {
+					
+					// create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
+					// it doesn't need to have a start or end
+					var eventObject = {
+						title: $.trim($(this).text()) // use the element's text as the event title
+					};
+					
+					// store the Event Object in the DOM element so we can get to it later
+					$(this).data('eventObject', eventObject);
+					
+					// make the event draggable using jQuery UI
+					$(this).draggable({
+						zIndex: 999,
+						revert: true,      // will cause the event to go back to its
+						revertDuration: 0  //  original position after the drag
+					});
+					
+				});
+			
+			
+			/* initialize the calendar
+				-----------------------------------------------------------------*/
+				
+				var calendar =  $('#calendar').fullCalendar({
+					header: {
+						left: 'title',
+						center: 'agendaDay,agendaWeek,month',
+						right: 'prev,next today'
+					},
+					editable: true,
+					firstDay: 1, //  1(Monday) this can be changed to 0(Sunday) for the USA system
+					selectable: true,
+					defaultView: 'month',
+					
+					axisFormat: 'h:mm',
+					columnFormat: {
+		                month: 'ddd',    // Mon
+		                week: 'ddd d', // Mon 7
+		                day: 'dddd M/d',  // Monday 9/7
+		                agendaDay: 'dddd d'
+		            },
+		            titleFormat: {
+		                month: 'MMMM yyyy', // September 2009
+		                week: "MMMM yyyy", // September 2009
+		                day: 'MMMM yyyy'                  // Tuesday, Sep 8, 2009
+		            },
+					allDaySlot: false,
+					selectHelper: true,
+					select: function(start, end, allDay) {
+						var title = prompt('Event Title:');
+						if (title) {
+							calendar.fullCalendar('renderEvent',
+								{
+									title: title,
+									start: start,
+									end: end,
+									allDay: allDay
+								},
+								true // make the event "stick"
+							);
+						}
+						calendar.fullCalendar('unselect');
+					},
+					droppable: true, // this allows things to be dropped onto the calendar !!!
+					drop: function(date, allDay) { // this function is called when something is dropped
+					
+						// retrieve the dropped element's stored Event Object
+						var originalEventObject = $(this).data('eventObject');
+						
+						// we need to copy it, so that multiple events don't have a reference to the same object
+						var copiedEventObject = $.extend({}, originalEventObject);
+						
+						// assign it the date that was reported
+						copiedEventObject.start = date;
+						copiedEventObject.allDay = allDay;
+						
+						// render the event on the calendar
+						// the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
+						$('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
+						
+						// is the "remove after drop" checkbox checked?
+						if ($('#drop-remove').is(':checked')) {
+							// if so, remove the element from the "Draggable Events" list
+							$(this).remove();
+						}
+						
+					},
+					
+					events: [
+						
+					],			
+				});
+				
+				
+			});
 	
-	    	
+		</script>
+		<script>
+	    $('#calender').focus();
+		</script>
 	</head>
 
 	<body>
@@ -235,7 +347,7 @@
                                     </div>
                                     <div class="content">
                                         <div id='wrap'>
-                                            <div id='calendar'></div>
+                                            <div id='calendar' name="calender"></div>
                                         </div>
                                         <div class="footer">
                                             <hr>
@@ -319,156 +431,5 @@
             </div>
         </div>
 	</body>
-	<!---->
-	
-
-	<script src="./js/jquery-1.10.2.js"></script>
-    <script src="./js/jquery-ui.custom.min.js"></script>
-    
-    <script src="./js/fullcalendar.js"></script>
-    <script>
-     $(document).ready(function() {
-    var date = new Date();
-	var d = date.getDate();
-	var m = date.getMonth();
-	var y = date.getFullYear();
-	
-	
-	  
-	/* initialize the external events
-	-----------------------------------------------------------------*/
-
-	$('#external-events div.external-event').each(function() {
-	
-		// create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
-		// it doesn't need to have a start or end
-		var eventObject = {
-			title: $.trim($(this).text()) // use the element's text as the event title
-		};
-		
-		// store the Event Object in the DOM element so we can get to it later
-		$(this).data('eventObject', eventObject);
-		
-		// make the event draggable using jQuery UI
-		$(this).draggable({
-			zIndex: 999,
-			revert: true,      // will cause the event to go back to its
-			revertDuration: 0  //  original position after the drag
-		});
-		
-	});
-
-
-	/* initialize the calendar
-	-----------------------------------------------------------------*/
-	
-	var calendar =  $('#calendar').fullCalendar({
-		header: {
-			left: 'title',
-			center: 'agendaDay,agendaWeek,month',
-			right: 'prev,next today'
-		},
-		editable: true,
-		firstDay: 1, //  1(Monday) this can be changed to 0(Sunday) for the USA system
-		selectable: true,
-		defaultView: 'month',
-		
-		axisFormat: 'h:mm',
-		columnFormat: {
-               month: 'ddd',    // Mon
-               week: 'ddd d', // Mon 7
-               day: 'dddd M/d',  // Monday 9/7
-               agendaDay: 'dddd d'
-           },
-           titleFormat: {
-               month: 'MMMM yyyy', // September 2009
-               week: "MMMM yyyy", // September 2009
-               day: 'MMMM yyyy'                  // Tuesday, Sep 8, 2009
-           },
-		allDaySlot: false,
-		selectHelper: true,
-		select: function(start, end, allDay) {
-			var title = prompt('Event Title:');
-			if (title) {
-				calendar.fullCalendar('renderEvent',
-					{
-						title: title,
-						start: start,
-						end: end,
-						allDay: allDay
-					},
-					true // make the event "stick"
-				);
-			}
-			calendar.fullCalendar('unselect');
-		},
-		droppable: true, // this allows things to be dropped onto the calendar !!!
-		drop: function(date, allDay) { // this function is called when something is dropped
-		
-			// retrieve the dropped element's stored Event Object
-			var originalEventObject = $(this).data('eventObject');
-			
-			// we need to copy it, so that multiple events don't have a reference to the same object
-			var copiedEventObject = $.extend({}, originalEventObject);
-			
-			// assign it the date that was reported
-			copiedEventObject.start = date;
-			copiedEventObject.allDay = allDay;
-			
-			// render the event on the calendar
-			// the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-			$('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
-			
-			// is the "remove after drop" checkbox checked?
-			if ($('#drop-remove').is(':checked')) {
-				// if so, remove the element from the "Draggable Events" list
-				$(this).remove();
-			}
-			
-		},
-		
-		events: [
-			
-		],			
-	});
-	
-	
-});
-
-</script>
-
-	<script src="./js/jquery.3.2.1.min.js" type="text/javascript">
-	</script>
-	<script src="./js/bootstrap.min.js" type="text/javascript">
-	</script>
-	
-	
-	<script src="./js/bootstrap-notify.js">
-	</script>
-	<script src="./js/bootstrap.js">
-	</script>
-	
-	<script src="./js/light-bootstrap-dashboard.js?v=1.4.0">
-	</script>
-	<script src="https://unpkg.com/ionicons@4.3.0/dist/ionicons.js">
-	</script>
-	
-	<script src="./js/custom.js">
-	</script>
-	<script type="text/javascript">
-	    $(document).ready(function() {
-	
-	        $.notify({
-	            icon: 'pe-7s-light2',
-	            message: "Student Time Management App demo by sbnnko004, hndjad002, edwgar008."
-	
-	        }, {
-	            type: 'info',
-	            timer: 4000
-	        });
-	
-	    });
-	</script>
-
 
 </html>

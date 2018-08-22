@@ -154,9 +154,6 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-
-        custom.initChartist();
-
         $.notify({
             icon: 'pe-7s-light2',
             message: "Student Time Management App demo by sbnnko004, hndjad002, edwgar008."
