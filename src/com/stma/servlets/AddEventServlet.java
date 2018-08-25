@@ -34,13 +34,11 @@ public class AddEventServlet extends HttpServlet {
 		
 
 		// fill it up in a User bean
-		Event event = new Event(eventname,eventdescription,startdate,enddate,starttime,endtime);
-		//Event event = new Event();
+		Event event = new Event(eventname,eventdescription,startdate,enddate,starttime+":00",endtime+":00");
 		
-
 		// call DAO layer and save the user object to DB
 		ApplicationDao dao = new ApplicationDao();
-		int rows = dao.addEvent(event);
+		int rows = dao.addEvent(event, req.getSession().getAttribute("username").toString());
 		//int rows = 0;
 
 		// prepare an information message for user about the success or failure of the operation

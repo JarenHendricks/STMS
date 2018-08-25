@@ -39,21 +39,27 @@ public class ApplicationDao {
 		return events;
 	}
 
-	public int addEvent(Event event) {
+	public int addEvent(Event event, String username) {
 		int rowsAffected = 0;
 		if(event instanceof Event) {
 			
 
 			try {
+				int userID=0;
 				// get the connection for the database
 				Connection connection = DBConnection.getConnectionToDatabase();
-
+				String sql = "SELECT userID FROM users where username = '"+username+"'";
+				Statement mystatement = connection.prepareStatement(sql);
+				ResultSet set = mystatement.executeQuery(sql);
+				while(set.next()) {
+					userID = set.getInt("userID");
+				}
 				// write the insert query
-				String insertQuery = "INSERT INTO `events` (`eventID`, `userID`, `EventDescription`, `EventName`, `StartDate`, `EndDate`, `StateTime`, `EndTime`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?);";
+				String insertQuery = "INSERT INTO `events` (`eventID`, `userID`, `EventDescription`, `EventName`, `StartDate`, `EndDate`, `StartTime`, `EndTime`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?);";
 
 				// set parameters with PreparedStatement
 				java.sql.PreparedStatement statement = connection.prepareStatement(insertQuery);
-				statement.setInt(1, 1);
+				statement.setInt(1, userID);
 				statement.setString(2, event.getEventDescription());
 				statement.setString(3, event.getEventName());
 				statement.setString(4, event.getStartDate());
@@ -78,7 +84,7 @@ public class ApplicationDao {
 			Connection connection = DBConnection.getConnectionToDatabase();
 
 			// write the insert query
-			String insertQuery = "INSERT INTO `users` (`userID`, `username`, `firstname`, `lastname`, `emailaddress`, `password`) VALUES (NULL, ?, ?, ?, ?, ?);";
+			String insertQuery = "INSERT INTO `users` (`userID`, `username`, `firstname`, `lastname`, `emailaddress`, `password`) VALUES (NULL, ?, ?, ?, ?, aes_encrypt(?,?));";
 
 			// set parameters with PreparedStatement
 			java.sql.PreparedStatement statement = connection.prepareStatement(insertQuery);
@@ -87,6 +93,7 @@ public class ApplicationDao {
 			statement.setString(3, user.getLastName());
 			statement.setString(4, user.getEmailAddress());
 			statement.setString(5, user.getPassWord());
+			statement.setString(6, "aikebiev");
 			
 
 			// execute the statement
@@ -98,6 +105,44 @@ public class ApplicationDao {
 		return rowsAffected;
 	}
 
+	public boolean checkIfUserExists(String username, String email) {
+		boolean exists=false;
+		
+		try {
+
+			// get the connection for the database
+			Connection connection = DBConnection.getConnectionToDatabase();
+
+			// write the select query
+			
+			String sql = "select * from users where username=?";
+
+			// set parameters with PreparedStatement
+			java.sql.PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setString(1, username);
+
+			// execute the statement and check whether user exists
+
+			ResultSet set = statement.executeQuery();
+			if (set.next()) {
+				exists= true;
+			}
+			if(!exists) {
+				sql = "select * from users where emailaddress=?";
+				statement = connection.prepareStatement(sql);
+				statement.setString(1, email);
+				set = statement.executeQuery();
+				if (set.next()) {
+					exists= true;
+				}
+			}
+		} catch (SQLException exception) {
+			exception.printStackTrace();
+		}
+
+		
+		return exists;
+	}
 	public boolean validateUser(String username, String password) {
 		boolean isValidUser = false;
 		try {
@@ -107,17 +152,18 @@ public class ApplicationDao {
 
 			// write the select query
 			
-			String sql = "select * from users where username=? and password=?";
+			String sql = "select * from users where username=? and password=aes_encrypt(?,?)";
 
 			// set parameters with PreparedStatement
 			java.sql.PreparedStatement statement = connection.prepareStatement(sql);
 			statement.setString(1, username);
 			statement.setString(2, password);
+			statement.setString(3, "aikebiev");
 
 			// execute the statement and check whether user exists
 
 			ResultSet set = statement.executeQuery();
-			while (set.next()) {
+			if(set.next()) {
 				isValidUser = true;
 			}
 		} catch (SQLException exception) {
